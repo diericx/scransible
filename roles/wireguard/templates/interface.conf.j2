@@ -1,0 +1,7 @@
+[Interface]
+Address = {{ server_wg_ipv4 }}/24,{{ server_wg_ipv6 }}/64
+ListenPort = {{ server_port }} 
+PrivateKey = {{ priv_key }}
+
+PostUp = iptables -A FORWARD -i {{ wg_interface_name }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -A FORWARD -i {{ wg_interface_name }}  -j ACCEPT; ip6tables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+PostDown = iptables -D FORWARD -i {{ wg_interface_name }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -D FORWARD -i {{ wg_interface_name }} -j ACCEPT; ip6tables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE

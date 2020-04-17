@@ -1,0 +1,14 @@
+---
+# tasks file for firewall
+#
+
+- name: Allow ssh
+  ufw:
+    rule: allow 
+    port: ssh 
+    log: yes
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+

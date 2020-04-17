@@ -1,0 +1,6 @@
+---
+- hosts:
+    - all
+    - racknerd-vps
+  roles:
+    - { role: roles/wireguard } 

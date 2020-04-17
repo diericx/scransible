@@ -1,0 +1,6 @@
+---
+# defaults file for wireguard
+wg_interface_name: wg0
+server_wg_ipv4: 10.66.66.1
+server_wg_ipv6: fd42:42:42::1
+server_port: 49160

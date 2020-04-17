@@ -1,0 +1,2 @@
+[racknerd-vps]
+server01 ansible_host=198.211.51.209 

@@ -1,0 +1,8 @@
+---
+- hosts: racknerd-vps
+  remote_user: zac
+  become: yes
+
+  roles:
+    - common
+    - openvpn

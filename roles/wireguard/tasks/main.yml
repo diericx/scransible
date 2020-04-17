@@ -1,0 +1,139 @@
+---
+# tasks file for wireguard
+#
+- debug: var=ansible_all_ipv4_addresses
+- debug: var=ansible_default_ipv4.address
+- debug: var=ansible_default_ipv4.interface
+  # - name: Download wireguard setup script 
+  #   become: yes
+  #   get_url:
+  #     url: https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh 
+  #     dest: /tmp/wireguard-install.sh
+  #     mode: '0740'
+
+    # - name: Execute wireguard setup script 
+    #   become: yes
+    #   shell: /tmp/wireguard-install.sh
+    #
+    #
+
+- name: Install gpg 
+  become: yes
+  apt:
+    name: gpg 
+    state: present
+
+# TODO: This was an issue with docker/molecule and may not be an issue later
+- name: Install drmngr 
+  become: yes
+  apt:
+    update_cache: yes
+    name: dirmngr 
+    state: present
+
+- name: Install software properties
+  become: yes
+  apt:
+    name: software-properties-common 
+    state: present
+
+- name: Add wireguard repo 
+  apt_repository:
+    repo: ppa:wireguard/wireguard
+
+- name: Install linux headers
+  become: yes
+  package:
+    name: "linux-headers-{{ ansible_kernel }}"
+  tags:
+    - skip_docker
+
+- name: Install resolveconf 
+  become: yes
+  apt:
+    update_cache: yes
+    name: resolvconf
+    state: present
+  tags:
+    - skip_docker
+
+- name: Install wireguard and iptables 
+  become: yes
+  apt:
+    update_cache: yes
+    name: ['wireguard', 'iptables'] 
+    state: present
+
+- name: Ensure wireguard conf dir exists 
+  become: yes
+  file:
+    path: /etc/wireguard
+    mode: '600'
+    state: directory
+
+- name: Generate private key 
+  command: "wg genkey"
+  register: priv_key_out
+- set_fact: 
+    priv_key={{ priv_key_out.stdout }}
+
+- name: Generate public key 
+  command: "wg genkey"
+  register: pub_key_out
+- set_fact: 
+    pub_key={{ pub_key_out.stdout }}
+
+- name: Generate symm pre key 
+  command: "wg genkey"
+  register: symm_key_out
+- set_fact: 
+    symm_key={{ symm_key_out.stdout }}
+
+- name: Add wireguard params 
+  become: yes
+  template:
+    src: params.j2
+    dest: /etc/wireguard/params
+    mode: '0644'
+
+- name: Add wireguard interface
+  become: yes
+  template:
+    src: interface.conf.j2
+    dest: "/etc/wireguard/{{ wg_interface_name }}.conf"
+    mode: '0644'
+
+- name: Enable port forward ipv4 systctl.d/wg.conf
+  become: yes
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    sysctl_file: /etc/sysctl.d/wg.conf
+    reload: yes
+  tags:
+    - skip_docker
+
+- name: Enable port forward ipv6 systctl.d/wg.conf
+  become: yes
+  sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: '1'
+    sysctl_set: yes
+    state: present
+    sysctl_file: /etc/sysctl.d/wg.conf
+    reload: yes
+  tags:
+    - skip_docker
+
+- name: Enable wg system 
+  become: yes
+  systemd:
+    name: "wg-quick@{{ wg_interface_name }}"
+    state: started
+    enabled: yes
+  tags:
+    - skip_docker
+
+# TODO: firewall allow port
