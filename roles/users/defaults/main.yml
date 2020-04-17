@@ -1,0 +1,7 @@
+---
+# defaults file for users
+users:
+  - name: zac 
+    state: present
+    authorized:
+      - authorized_keys/zac/id_rsa.pub

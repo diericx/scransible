@@ -1,0 +1,19 @@
+---
+# tasks file for users
+- name: CRUD user accounts
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    state: "{{ item.state|default('absent') }}"
+    groups: "{{ ['staff'] + item.groups|default([]) }}"
+    shell: "{{ item.shell|default('/bin/bash') }}"
+    uid: "{{ item.uid|default(2000) }}"
+  with_items: "{{ users }}"
+
+- name: Manage public keys
+  become: yes
+  authorized_key:
+    user: "{{ item.0.name }}"
+    key: "{{ lookup('file', item.1) }}"
+  when: item.0.state == 'present'
+  loop: "{{ lookup('subelements', users, 'authorized', {'skip_missing': True}, wantlist=True) }}"
