@@ -16,7 +16,6 @@
     #   shell: /tmp/wireguard-install.sh
     #
     #
-
 - name: Install gpg 
   become: yes
   apt:
@@ -48,12 +47,16 @@
   tags:
     - skip_docker
 
-- name: Install resolveconf 
+- name: Install resolvconf 
   become: yes
   apt:
     update_cache: yes
     name: resolvconf
     state: present
+  register: result 
+  until: result is not failed
+  retries: 5
+  delay: 30
   tags:
     - skip_docker
 
@@ -71,20 +74,38 @@
     mode: '600'
     state: directory
 
-- name: Generate private key 
+- name: Generate server private key 
   command: "wg genkey"
   register: priv_key_out
 - set_fact: 
     priv_key={{ priv_key_out.stdout }}
 
-- name: Generate public key 
-  command: "wg genkey"
+- name: Generate server public key 
+  shell: 'echo {{ priv_key }} | wg pubkey'
   register: pub_key_out
 - set_fact: 
     pub_key={{ pub_key_out.stdout }}
 
-- name: Generate symm pre key 
+#
+# Client vars that get used to define a client in the interface config
+#
+- name: Generate client private key 
   command: "wg genkey"
+  register: priv_key_out
+- set_fact: 
+    client_priv_key={{ priv_key_out.stdout }}
+
+- name: Generate client public key 
+  shell: 'echo {{ client_priv_key }} | wg pubkey'
+  register: pub_key_out
+- set_fact: 
+    client_pub_key={{ pub_key_out.stdout }}
+#
+#
+#
+
+- name: Generate symm pre key 
+  command: "wg genpsk"
   register: symm_key_out
 - set_fact: 
     symm_key={{ symm_key_out.stdout }}
@@ -137,3 +158,19 @@
     - skip_docker
 
 # TODO: firewall allow port
+- name: Allow proxy port
+  ufw:
+    rule: allow 
+    port: "{{ server_port }}"
+    log: yes
+
+
+# 
+# Generate and save client file
+#
+- name: Create client file 
+  become: yes
+  template:
+    src: client.conf.j2
+    dest: "$HOME/{{ wg_interface_name }}-client-{{ client_name }}.conf"
+    mode: '0644'

@@ -1,0 +1,8 @@
+---
+- hosts:
+    - all
+    - racknerd-vps
+  roles:
+    - { role: roles/common }
+    - { role: roles/users } 
+    - { role: roles/firewall } 

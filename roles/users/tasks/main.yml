@@ -1,6 +1,24 @@
 ---
 # tasks file for users
 #
+
+- name: Create groups
+  become: yes
+  block:
+    - name: Create system groups
+      group:
+        name: "{{ item }}"
+      with_items:
+        - staff
+
+- name: Allow staff group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%staff'
+    line: '%staff ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
 - name: CRUD user accounts
   become: yes
   user:

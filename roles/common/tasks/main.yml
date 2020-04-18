@@ -1,2 +1,8 @@
 ---
 # tasks file for common
+- name: Ensure ubuntu is set as a host 
+  become: yes
+  lineinfile:
+    path: /etc/hosts 
+    regexp: '^127\.0\.0\.1.*ubuntu'
+    line: "127.0.0.1  ubuntu"
