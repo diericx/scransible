@@ -3,11 +3,11 @@
 Add your server to the hosts and the firs thing you want to do is run the common role as root to setup users
 and the firewall, basic setup.
 
-`ansible-playbook --user root -i hosts plays/common.yml --extra-vars "ansible_ssh_pass=<pass>"`
+`ansible-playbook --user root -i hosts plays/common.yml --extra-vars 'ansible_ssh_pass=<pass>'`
 
 Then you can run any other plays as your current user.
 
-`ansible-playbook -i hosts -K plays/[play].yml`
+`ansible-playbook --user zac -i hosts plays/[play].yml`
 
 # Dev
 ## Molecule

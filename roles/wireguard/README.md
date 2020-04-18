@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Sets up a basic wireguard VPN and places a client config in the user's home dir.
 
 Requirements
 ------------

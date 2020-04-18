@@ -1,21 +1,6 @@
 ---
 # tasks file for wireguard
 #
-- debug: var=ansible_all_ipv4_addresses
-- debug: var=ansible_default_ipv4.address
-- debug: var=ansible_default_ipv4.interface
-  # - name: Download wireguard setup script 
-  #   become: yes
-  #   get_url:
-  #     url: https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh 
-  #     dest: /tmp/wireguard-install.sh
-  #     mode: '0740'
-
-    # - name: Execute wireguard setup script 
-    #   become: yes
-    #   shell: /tmp/wireguard-install.sh
-    #
-    #
 - name: Install gpg 
   become: yes
   apt:
@@ -37,6 +22,7 @@
     state: present
 
 - name: Add wireguard repo 
+  become: yes
   apt_repository:
     repo: ppa:wireguard/wireguard
 
@@ -71,7 +57,7 @@
   become: yes
   file:
     path: /etc/wireguard
-    mode: '600'
+    mode: '644'
     state: directory
 
 - name: Generate server private key 
@@ -148,22 +134,12 @@
   tags:
     - skip_docker
 
-- name: Enable wg system 
-  become: yes
-  systemd:
-    name: "wg-quick@{{ wg_interface_name }}"
-    state: started
-    enabled: yes
-  tags:
-    - skip_docker
-
-# TODO: firewall allow port
 - name: Allow proxy port
+  become: yes
   ufw:
     rule: allow 
     port: "{{ server_port }}"
     log: yes
-
 
 # 
 # Generate and save client file
@@ -172,5 +148,14 @@
   become: yes
   template:
     src: client.conf.j2
-    dest: "$HOME/{{ wg_interface_name }}-client-{{ client_name }}.conf"
+    dest: "/etc/wireguard/{{ wg_interface_name }}-client-{{ client_name }}.conf"
     mode: '0644'
+
+- name: Enable and start wg service 
+  become: yes
+  systemd:
+    name: "wg-quick@{{ wg_interface_name }}"
+    state: started
+    enabled: yes
+  tags:
+    - skip_docker
