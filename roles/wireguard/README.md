@@ -4,7 +4,9 @@ Wireguard
 Sets up a basic wireguard VPN and places a client config in /etc/wireguard dir.
 
 This is a direct translation of this script:
-https://github.com/angristan/wireguard-install/blob/master/wireguard-install.sh
+https://github.com/angristan/wireguard-install/blob/master/wireguard-install.sh  
+
+One thing to note is that this isn't entirely idempotent. Every time this runs it will generate new public and private keys for the server and client.
 
 Role Variables
 --------------
