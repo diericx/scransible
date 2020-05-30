@@ -1,0 +1,68 @@
+---
+- name: Install oh-my-zsh
+  become: yes
+  apt:
+    name: zsh 
+    state: latest
+- name: Change user shell to zsh 
+  become: yes
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: /bin/zsh
+
+# Nix env
+- name: Check if repo exists
+  stat:
+    path: ~/github.com/diericx/nix-env
+  register: nix_env_dir
+- name: Clone nix-env config repo if not exists
+  git:
+    repo: 'https://github.com/diericx/nix-env'
+    dest: ~/github.com/diericx/nix-env
+  when: nix_env_dir.stat.exists == false
+
+# ZSH 
+- name: Check if zsh repo exists
+  stat:
+    path: ~/.oh-my-zsh
+  register: zsh_repo_dir
+- name: Clone zsh repo if not exists
+  git:
+    repo: 'https://github.com/ohmyzsh/ohmyzsh'
+    dest: ~/.oh-my-zsh
+  when: zsh_repo_dir.stat.exists == false
+- name: Create a symbolic link for .zshrc
+  file:
+    src: ~/github.com/diericx/nix-env/zshrc
+    dest: ~/.zshrc
+    owner: '{{ ansible_user_id }}'
+    group: '{{ ansible_user_id }}'
+    state: link
+- name: Install powerline fonts
+  become: yes
+  apt:
+    name: fonts-powerline
+    state: latest
+
+# Python
+- name: Install pip3
+  become: yes
+  apt:
+    name: python3-pip 
+    state: latest
+- name: Install virtualenv
+  become: yes
+  apt:
+    name: virtualenv 
+    state: latest
+- name: Install virtualenvwrapper
+  become: yes
+  apt:
+    name: virtualenvwrapper
+    state: latest
+
+# Keyboard settings
+- name: Lower delay before starting repeat
+  shell: gsettings set org.gnome.desktop.peripherals.keyboard delay 250
+- name: Lower delay between key repeats
+  shell: gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 20

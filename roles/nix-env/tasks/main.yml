@@ -1,6 +1,0 @@
----
-# tasks file for nix-env
-- git:
-    repo: 'https://github.com/diericx/nix-env'
-    dest: /home/{{ user }}/gitub.com/diericx/
-    version: release-0.22

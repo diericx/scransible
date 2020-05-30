@@ -18,5 +18,6 @@ Then you can run any other plays as your current user.
 ### Init in existing role
 `molecule init scenario --role-name role-name-here -d docker`
 
+# Personal Env
 
-
+`ansible-playbook --connection=local --inventory 127.0.0.1, plays/personal.yml`
