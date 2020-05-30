@@ -20,4 +20,6 @@ Then you can run any other plays as your current user.
 
 # Personal Env
 
-`ansible-playbook --connection=local --inventory 127.0.0.1, plays/personal.yml`
+```
+ansible-playbook --connection=local --inventory 127.0.0.1, plays/personal.yml --extra-vars "git_username=diericx git_email=zacharyholland@gmail.com"
+```

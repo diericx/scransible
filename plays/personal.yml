@@ -1,8 +1,6 @@
 ---
 - hosts:
     - all
-  vars:
-    user: zac
   roles:
     - role: roles/common
     - role: roles/personal-env

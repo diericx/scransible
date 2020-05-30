@@ -61,8 +61,30 @@
     name: virtualenvwrapper
     state: latest
 
+- name: Install gvm requirements
+  become: yes
+  apt:
+    pkg:
+      - curl 
+      - git
+      - mercurial
+      - make
+      - binutils
+      - bison
+      - gcc
+      - build-essential
+- name: Check if gvm exists
+  stat:
+    path: ~/.gvm
+  register: nix_env_dir
+- name: Install gvm
+  shell: curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer | bash
+  when: nix_env_dir.stat.exists == false
+
 # Keyboard settings
 - name: Lower delay before starting repeat
   shell: gsettings set org.gnome.desktop.peripherals.keyboard delay 250
 - name: Lower delay between key repeats
   shell: gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 20
+- name: Flip scroll for mouse
+  shell: gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
