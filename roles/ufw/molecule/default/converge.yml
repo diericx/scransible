@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ufw"
+      include_role:
+        name: "ufw"
+      vars:
+        allow_ports:
+          - 23

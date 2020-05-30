@@ -2,5 +2,27 @@
 - hosts:
     - all
     - racknerd-vps
+  vars:
+    wg_server:
+      interface_name: wg0
+      ipv4: 10.66.66.1
+      ipv6: fd42:42:42::1
+      port: 49161
   roles:
-    - { role: roles/wireguard } 
+    - role: roles/wireguard
+      vars:
+        wg_server:
+          interface_name: wg0
+          ipv4: 10.66.66.1
+          ipv6: fd42:42:42::1
+          port: 49161
+    - role: roles/nginx
+      vars:
+        reverse_proxies:
+          - ip: 10.66.66.2
+            port: 51413 
+    - role: roles/ufw
+      vars:
+        allow_ports:
+          - 49161
+          - 51413

@@ -1,10 +1,10 @@
 [Interface]
 PrivateKey = {{ client_priv_key }} 
-Address = {{ client_ipv4 }}/24,{{ client_ipv6 }}/64
-DNS = {{ client_dns1 }},{{ client_dns2 }}
+Address = {{ wg_client.ipv4 }}/24,{{ wg_client.ipv6 }}/64
+DNS = {{ wg_client.dns1 }},{{ wg_client.dns2 }}
 
 [Peer]
 PublicKey = {{ pub_key }}
 PresharedKey = {{ symm_key }} 
-Endpoint = {{ ansible_default_ipv4.address }}:{{ server_port }}
+Endpoint = {{ ansible_default_ipv4.address }}:{{ wg_server.port }}
 AllowedIPs = 0.0.0.0/0,::/0

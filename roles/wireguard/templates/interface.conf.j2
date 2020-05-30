@@ -1,11 +1,11 @@
 [Interface]
-Address = {{ server_wg_ipv4 }}/24,{{ server_wg_ipv6 }}/64
-ListenPort = {{ server_port }} 
+Address = {{ wg_server.ipv4 }}/24,{{ wg_server.ipv6 }}/64
+ListenPort = {{ wg_server.port }} 
 PrivateKey = {{ priv_key }}
-PostUp = iptables -A FORWARD -i {{ wg_interface_name }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -A FORWARD -i {{ wg_interface_name }}  -j ACCEPT; ip6tables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
-PostDown = iptables -D FORWARD -i {{ wg_interface_name }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -D FORWARD -i {{ wg_interface_name }} -j ACCEPT; ip6tables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+PostUp = iptables -A FORWARD -i {{ wg_server.interface_name }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -A FORWARD -i {{ wg_server.interface_name }}  -j ACCEPT; ip6tables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+PostDown = iptables -D FORWARD -i {{ wg_server.interface_name }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -D FORWARD -i {{ wg_server.interface_name }} -j ACCEPT; ip6tables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
 
 [Peer]
 PublicKey = {{ client_pub_key }}
 PresharedKey = {{ symm_key }} 
-AllowedIPs = {{ client_ipv4 }}/32,{{ client_ipv6 }}/128
+AllowedIPs = {{ wg_client.ipv4 }}/32,{{ wg_client.ipv6 }}/128

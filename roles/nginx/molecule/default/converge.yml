@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include nginx"
+      include_role:
+        name: "nginx"
+      vars:
+        reverse_proxies:
+          - ip: 10.66.66.2
+            port: 51413 

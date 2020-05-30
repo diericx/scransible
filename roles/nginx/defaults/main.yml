@@ -1,0 +1,7 @@
+---
+# defaults file for nginx
+reverse_proxies: []
+root_group: root
+nginx_conf_file_path: /etc/nginx/sites-enabled/custom_server.conf
+nginx_service_state: started 
+nginx_service_enabled: yes

@@ -1,0 +1,10 @@
+{% for reverse_proxy in reverse_proxies %}
+server {
+	listen {{ reverse_proxy.port }};
+
+	location / {
+		proxy_pass http://{{ reverse_proxy.ip }};
+	}
+}
+
+{% endfor %}

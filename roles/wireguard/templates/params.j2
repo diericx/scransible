@@ -1,9 +1,9 @@
 SERVER_PUB_IP={{ ansible_default_ipv4.address }}
 SERVER_PUB_NIC={{ ansible_default_ipv4.interface }}
-SERVER_WG_NIC={{ wg_interface_name }}
-SERVER_WG_IPV4={{ server_wg_ipv4 }} 
-SERVER_WG_IPV6={{ server_wg_ipv6 }}
-SERVER_PORT={{ server_port }}
+SERVER_WG_NIC={{ wg_server.interface_name }}
+SERVER_WG_IPV4={{ wg_server.ipv4 }} 
+SERVER_WG_IPV6={{ wg_server.ipv4 }}
+SERVER_PORT={{ wg_server.port }}
 SERVER_PRIV_KEY={{ priv_key }}
 SERVER_PUB_KEY={{ pub_key }}
 SYMM_PRE_KEY={{ symm_key }}

@@ -13,7 +13,7 @@ Then you can run any other plays as your current user.
 ## Molecule
 
 ### Init a new role
-`molecule init role -r role-name-here -d docker`
+`molecule init role role-name-here -d docker`
 
 ### Init in existing role
 `molecule init scenario --role-name role-name-here -d docker`

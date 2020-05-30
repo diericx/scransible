@@ -1,12 +1,14 @@
 ---
 # defaults file for wireguard
-wg_interface_name: wg0
-server_wg_ipv4: 10.66.66.1
-server_wg_ipv6: fd42:42:42::1
-server_port: 49160
+wg_server:
+  interface_name: wg0
+  ipv4: 10.66.66.1
+  ipv6: fd42:42:42::1
+  port: 49160
 
-client_ipv4: 10.66.66.2
-client_ipv6: fd42:42:42::2
-client_dns1: 176.103.130.130
-client_dns2: 176.103.130.131
-client_name: client1
+wg_client:
+  name: default_client
+  ipv4: 10.66.66.2
+  ipv6: fd42:42:42::2
+  dns1: 176.103.130.130
+  dns2: 176.103.130.131

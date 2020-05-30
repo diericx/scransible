@@ -107,7 +107,7 @@
   become: yes
   template:
     src: interface.conf.j2
-    dest: "/etc/wireguard/{{ wg_interface_name }}.conf"
+    dest: "/etc/wireguard/{{ wg_server.interface_name }}.conf"
     mode: '0644'
 
 - name: Enable port forward ipv4 systctl.d/wg.conf
@@ -134,13 +134,6 @@
   tags:
     - skip_docker
 
-- name: Allow proxy port
-  become: yes
-  ufw:
-    rule: allow 
-    port: "{{ server_port }}"
-    log: yes
-
 # 
 # Generate and save client file
 #
@@ -148,13 +141,13 @@
   become: yes
   template:
     src: client.conf.j2
-    dest: "/etc/wireguard/{{ wg_interface_name }}-client-{{ client_name }}.conf"
+    dest: "/etc/wireguard/{{ wg_server.interface_name }}-client-{{ wg_client.name }}.conf"
     mode: '0644'
 
 - name: Enable and start wg service 
   become: yes
   systemd:
-    name: "wg-quick@{{ wg_interface_name }}"
+    name: "wg-quick@{{ wg_server.interface_name }}"
     state: started
     enabled: yes
   tags:

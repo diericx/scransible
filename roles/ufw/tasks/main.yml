@@ -1,0 +1,15 @@
+---
+# tasks file for ufw
+- name: Allow ssh
+  become: yes
+  ufw:
+    rule: allow 
+    port: "{{ item }}"
+  with_items:
+    - ssh
+    - "{{ allow_ports }}"
+
+- name: Enable UFW
+  become: yes
+  ufw:
+    state: enabled
